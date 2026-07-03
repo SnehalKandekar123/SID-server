@@ -15,6 +15,7 @@ app.use(express.json());
 
 const allowedOrigins = [
   "http://localhost:3000",
+  "https://sid-client.vercel.app"
 ];
 
 app.use((req, res, next) => {
@@ -42,7 +43,7 @@ mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log(err));
-  
+
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
