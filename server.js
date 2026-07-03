@@ -42,7 +42,13 @@ mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log(err));
-
+  
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "SID Server is running successfully 🚀"
+  });
+});
 app.post("/api/contact", async (req, res) => {
   try {
     const { fullName, email, mobile, message } = req.body;
