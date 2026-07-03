@@ -5,7 +5,7 @@ const dotenv = require("dotenv");
 const nodemailer = require("nodemailer");
 
 const Contact = require("./models/Contact");
-
+const Quotation = require("./models/Quotation");
 dotenv.config();
 
 const app = express();
@@ -117,7 +117,74 @@ app.post("/api/contact", async (req, res) => {
     });
   }
 });
+app.post("/api/quotation", async (req, res) => {
+  try {
+    const quotation = new Quotation(req.body);
 
+    await quotation.save();
+
+    await transporter.sendMail({
+      from: process.env.EMAIL,
+      to: process.env.EMAIL,
+      subject: "📩 New Quotation Request",
+      html: `
+        <h2>New Quotation Request</h2>
+
+        <table border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse;">
+
+          <tr>
+            <td><b>Name</b></td>
+            <td>${quotation.name}</td>
+          </tr>
+
+          <tr>
+            <td><b>Company Name</b></td>
+            <td>${quotation.companyName}</td>
+          </tr>
+
+          <tr>
+            <td><b>Email</b></td>
+            <td>${quotation.email}</td>
+          </tr>
+
+          <tr>
+            <td><b>Mobile</b></td>
+            <td>${quotation.mobile}</td>
+          </tr>
+
+          <tr>
+            <td><b>Category</b></td>
+            <td>${quotation.category}</td>
+          </tr>
+
+          <tr>
+            <td><b>Quantity</b></td>
+            <td>${quotation.quantity}</td>
+          </tr>
+
+          <tr>
+            <td><b>Message</b></td>
+            <td>${quotation.message}</td>
+          </tr>
+
+        </table>
+      `,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Quotation Request Sent Successfully",
+    });
+
+  } catch (err) {
+    console.log(err);
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+});
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
